@@ -8,7 +8,7 @@ use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class UrlGetter
+class JobCollector
 {
 	/**
 	 * @var HttpClientInterface
@@ -16,7 +16,7 @@ class UrlGetter
 	private $httpClient;
 
 	/**
-	 * UrlGetter constructor.
+	 * JobCollector constructor.
 	 *
 	 * @param HttpClientInterface $httpClient
 	 */

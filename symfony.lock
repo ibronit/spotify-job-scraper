@@ -1,6 +1,9 @@
 {
+    "fabpot/goutte": {
+        "version": "v4.0.0"
+    },
     "php": {
-        "version": "7.3"
+        "version": "7.4"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -10,6 +13,9 @@
     },
     "psr/log": {
         "version": "1.1.2"
+    },
+    "symfony/browser-kit": {
+        "version": "v4.4.4"
     },
     "symfony/cache": {
         "version": "v4.4.4"
@@ -33,10 +39,16 @@
             "config/bootstrap.php"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v4.4.4"
+    },
     "symfony/debug": {
         "version": "v4.4.4"
     },
     "symfony/dependency-injection": {
+        "version": "v4.4.4"
+    },
+    "symfony/dom-crawler": {
         "version": "v4.4.4"
     },
     "symfony/dotenv": {
