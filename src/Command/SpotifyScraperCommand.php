@@ -74,14 +74,16 @@ class SpotifyScraperCommand extends Command
      */
 	private function getJobs(OutputInterface $output): array
     {
-        $section1 = $output->section();
-        $progress1 = new ProgressBar($section1);
-        $progress1->start(100);
+        $section = $output->section();
+        $progress = new ProgressBar($section);
+        $progress->setFormat('<comment>Collecting jobs...</comment> [%bar%] %percent%%');
+        $progress->start(100);
 
         $jobs = $this->jobCollector->getJobs();
 
-        $progress1->finish();
+        $progress->finish();
         $output->writeln('');
+        $output->writeln('<info>Done!</info>');
 
         return $jobs;
     }
@@ -92,20 +94,22 @@ class SpotifyScraperCommand extends Command
      */
     private function scrapeJobs(array $jobs, OutputInterface $output)
     {
-        $section2 = $output->section();
-        $progress2 = new ProgressBar($section2);
-        $progress2->start(100);
+        $section = $output->section();
+        $progress = new ProgressBar($section);
+        $progress->setFormat('<comment>Scraping and processing jobs...</comment> [%bar%] %percent%%');
+        $progress->start(count($jobs));
 
         /** @var Job $job */
         foreach($jobs as $job) {
             $this->jobScraper->scrapeJob($job);
             $this->jobDetailGuesser->guessJobDetails($job);
 
-            $progress2->advance(100 / count($jobs));
+            $progress->advance(1);
         }
 
-        $progress2->finish();
+        $progress->finish();
         $output->writeln('');
+        $output->writeln('<info>Done!</info>');
     }
 
     /**
@@ -117,9 +121,11 @@ class SpotifyScraperCommand extends Command
     {
         $section = $output->section();
         $progress = new ProgressBar($section);
+        $progress->setFormat('<comment>Generating CSV...</comment> [%bar%] %percent%%');
         $progress->start(100);
 
-        $writer = Writer::createFromPath(sprintf('spotify-scraped-jobs-%s.csv', date('Ymdhis')), 'w+');
+        $fileName = sprintf('spotify-scraped-jobs-%s.csv', date('Ymdhis'));
+        $writer = Writer::createFromPath($fileName, 'w+');
         $writer->insertOne(['Title', 'URL', 'Description', 'Level', 'Years of experience']);
 
         /** @var Job $job */
@@ -135,5 +141,6 @@ class SpotifyScraperCommand extends Command
 
         $progress->finish();
         $output->writeln('');
+        $output->writeln(sprintf('<info>Done! Now you can open your csv: %s</info>', $fileName));
     }
 }
