@@ -135,7 +135,7 @@ class SpotifyScraperCommand extends Command
                 $job->getUrl(),
                 $job->getDescription(),
                 $job->getLevel(),
-                $job->getYearsOfExperience(),
+                $job->getFormattedYearsOfExperience(),
             ]);
         }
 

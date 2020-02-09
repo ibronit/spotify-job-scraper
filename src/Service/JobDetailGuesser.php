@@ -93,6 +93,7 @@ class JobDetailGuesser
         foreach (self::YEARS_OF_EXPERIENCE_KEYWORDS as $intValue => $stringValue) {
             $pattern = sprintf("/\b(\d+|%s) years?\b/i", $stringValue);
             if (preg_match($pattern, $job->getDescription(), $matches)) {
+                $job->setFoundYearsOfExperienceInText(true);
                 return $this->filterOutIntValue(array_shift($matches)) ?: $intValue;
             }
         }

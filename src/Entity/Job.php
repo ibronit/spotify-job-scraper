@@ -28,6 +28,9 @@ class Job
 	/** @var int|null */
 	private ?int $yearsOfExperience = null;
 
+	/** @var bool */
+	private bool $foundYearsOfExperienceInText = false;
+
 	/**
 	 * @return string
 	 */
@@ -122,5 +125,45 @@ class Job
     public function setYearsOfExperience(?int $yearsOfExperience): void
     {
         $this->yearsOfExperience = $yearsOfExperience;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFoundYearsOfExperienceInText(): bool
+    {
+        return $this->foundYearsOfExperienceInText;
+    }
+
+    /**
+     * @param bool $foundYearsOfExperienceInText
+     */
+    public function setFoundYearsOfExperienceInText(bool $foundYearsOfExperienceInText): void
+    {
+        $this->foundYearsOfExperienceInText = $foundYearsOfExperienceInText;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedYearsOfExperience(): string
+    {
+        if ($this->isFoundYearsOfExperienceInText()) {
+            if ($this->getYearsOfExperience() === 1) {
+                return sprintf('%d year', $this->getYearsOfExperience());
+            } else {
+                return sprintf('%d year(s)', $this->getYearsOfExperience());
+            }
+        }
+
+        if ($this->getYearsOfExperience() === self::YEARS_OF_EXPERIENCE_JUNIOR) {
+            return sprintf('<= %d year(s)', self::YEARS_OF_EXPERIENCE_JUNIOR);
+        }
+
+        if ($this->getYearsOfExperience() === self::YEARS_OF_EXPERIENCE_EXPERT) {
+            return sprintf('>= %d years', self::YEARS_OF_EXPERIENCE_EXPERT);
+        }
+
+        return 'Cannot find out';
     }
 }
