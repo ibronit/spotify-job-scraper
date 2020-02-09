@@ -7,20 +7,26 @@ class Job
     const LEVEL_JUNIOR = 'junior';
     const LEVEL_EXPERT = 'expert';
 
-	/** @var string */
-	private $title = '';
+    const YEARS_OF_EXPERIENCE_JUNIOR = 2;
+    const YEARS_OF_EXPERIENCE_EXPERT = 3;
 
 	/** @var string */
-	private $url = '';
+	private string $title = '';
+
+	/** @var string */
+	private string $url = '';
 
 	/** @var string  */
-	private $category = '';
+	private string $category = '';
 
 	/** @var string */
-	private $description = '';
+	private string $description = '';
 
 	/** @var string */
-	private $level = '';
+	private string $level = '';
+
+	/** @var int|null */
+	private ?int $yearsOfExperience = null;
 
 	/**
 	 * @return string
@@ -100,5 +106,21 @@ class Job
     public function setLevel(string $level): void
     {
         $this->level = $level;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getYearsOfExperience(): ?int
+    {
+        return $this->yearsOfExperience;
+    }
+
+    /**
+     * @param int|null $yearsOfExperience
+     */
+    public function setYearsOfExperience(?int $yearsOfExperience): void
+    {
+        $this->yearsOfExperience = $yearsOfExperience;
     }
 }
