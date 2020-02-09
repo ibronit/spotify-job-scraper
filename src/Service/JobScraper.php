@@ -29,8 +29,8 @@ class JobScraper
             $jobCategory = $crawler->filter('html div.single-post--meta')->html();
             $jobDescription = $crawler->filter('html div.column-inner')->html();
 
-
-            $job->setDescription($jobDescription);
+            $job->setCategory(trim(strip_tags($jobCategory)));
+            $job->setDescription(trim(strip_tags($jobDescription)));
         } catch (\InvalidArgumentException $e) {
             // TODO: log error
         }

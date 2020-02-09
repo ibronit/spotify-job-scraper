@@ -2,6 +2,9 @@
     "fabpot/goutte": {
         "version": "v4.0.0"
     },
+    "league/csv": {
+        "version": "9.5.0"
+    },
     "php": {
         "version": "7.4"
     },

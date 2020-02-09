@@ -6,6 +6,7 @@ use App\Entity\Job;
 use App\Service\JobDetailGuesser;
 use App\Service\JobScraper;
 use App\Service\JobCollector;
+use League\Csv\Writer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,12 +52,22 @@ class SpotifyScraperCommand extends Command
 		;
 	}
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
         $jobs = $this->getJobs($output);
 
+        $output->writeln('');
+
         $this->scrapeJobs($jobs, $output);
 
+        $output->writeln('');
+
+        $this->generateCSV($jobs, $output);
 
 		return 0;
 	}
@@ -97,5 +108,33 @@ class SpotifyScraperCommand extends Command
         }
 
         $progress2->finish();
+    }
+
+    /**
+     * @param array $jobs
+     * @param OutputInterface $output
+     * @throws \League\Csv\CannotInsertRecord
+     */
+    private function generateCSV(array $jobs, OutputInterface $output)
+    {
+        $section = $output->section();
+        $progress = new ProgressBar($section);
+        $progress->start(100);
+
+        $writer = Writer::createFromPath(sprintf('spotify-scraped-jobs-%s.csv', date('Ymdhis')), 'w+');
+        $writer->insertOne(['Title', 'URL', 'Description', 'Level', 'Years of experience']);
+
+        /** @var Job $job */
+        foreach ($jobs as $job) {
+            $writer->insertOne([
+                $job->getTitle(),
+                $job->getUrl(),
+                $job->getDescription(),
+                $job->getLevel(),
+                $job->getYearsOfExperience(),
+            ]);
+        }
+
+        $progress->finish();
     }
 }
