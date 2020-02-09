@@ -19,15 +19,15 @@ class SpotifyScraperCommand extends Command
 	/**
 	 * @var JobCollector
 	 */
-	private $jobCollector;
+	private JobCollector $jobCollector;
     /**
      * @var JobScraper
      */
-    private $jobScraper;
+    private JobScraper $jobScraper;
     /**
      * @var JobDetailGuesser
      */
-    private $jobDetailGuesser;
+    private JobDetailGuesser $jobDetailGuesser;
 
     /**
      * SpotifyScraperCommand constructor.
@@ -61,11 +61,7 @@ class SpotifyScraperCommand extends Command
 	{
         $jobs = $this->getJobs($output);
 
-        $output->writeln('');
-
         $this->scrapeJobs($jobs, $output);
-
-        $output->writeln('');
 
         $this->generateCSV($jobs, $output);
 
@@ -82,9 +78,10 @@ class SpotifyScraperCommand extends Command
         $progress1 = new ProgressBar($section1);
         $progress1->start(100);
 
-        $jobs = $this->jobCollector->getUrls();
+        $jobs = $this->jobCollector->getJobs();
 
         $progress1->finish();
+        $output->writeln('');
 
         return $jobs;
     }
@@ -108,6 +105,7 @@ class SpotifyScraperCommand extends Command
         }
 
         $progress2->finish();
+        $output->writeln('');
     }
 
     /**
@@ -136,5 +134,6 @@ class SpotifyScraperCommand extends Command
         }
 
         $progress->finish();
+        $output->writeln('');
     }
 }

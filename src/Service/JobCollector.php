@@ -27,36 +27,63 @@ class JobCollector
 
     /**
      * @return array
+     * @throws DecodingExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      */
-	public function getUrls(): array
+	public function getJobs(): array
 	{
-	    try {
+	    $jobs = [];
+
+	    foreach ($this->getJobRequestGenerator() as $response) {
+            $remappedJobs = array_map(function ($jobArray) {
+                $job = new Job();
+                $job->setUrl($jobArray['url']);
+                $job->setTitle($jobArray['title']);
+
+                return $job;
+            }, $response);
+
+            $jobs = array_merge($jobs, $remappedJobs);
+        }
+
+	    return $jobs;
+	}
+
+    /**
+     * @return \Generator
+     * @throws DecodingExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     */
+	private function getJobRequestGenerator()
+    {
+        $found = 99;
+        $perPage = 99;
+        $pageNr = 1;
+
+        while ($found === $perPage) {
             $response = $this->httpClient->request(
                 'POST',
                 'https://www.spotifyjobs.com/wp-admin/admin-ajax.php',
                 [
                     'body' => [
                         'action' => 'get_jobs',
-                        'pageNr' => 1, // TODO: there can be more pages
-                        'perPage' => 100,
+                        'pageNr' => $pageNr,
+                        'perPage' => $perPage,
                         'locations' => ['sweden'],
                     ]
                 ]
             );
+            $responseArray = $response->toArray()['data']['items'];
+            $found = count($responseArray);
+            $pageNr++;
 
-            // TODO: validate values
-            $responseArray = $response->toArray();
-        } catch (TransportExceptionInterface | HttpExceptionInterface | DecodingExceptionInterface $e) {
-            // TODO: cli error log
+            yield $responseArray;
         }
-
-		return array_map(function ($jobArray) {
-			$job = new Job();
-			$job->setUrl($jobArray['url']);
-			$job->setTitle($jobArray['title']);
-
-			return $job;
-		}, $responseArray['data']['items']);
-
-	}
+    }
 }
